@@ -1,0 +1,8 @@
+#
+# For a description of the syntax of this configuration file,
+# see kconfig-language at https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt
+#
+
+config LIB_ZLIB
+	bool "zlib data compression library"
+	default n
