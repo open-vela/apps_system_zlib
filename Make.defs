@@ -1,5 +1,4 @@
-############################################################################
-# external/zlib/Makefile
+# external/zlib/Make.defs
 #
 #   Copyright (C) 2019 Xiaomi Inc. All rights reserved.
 #
@@ -32,8 +31,8 @@
 #
 ############################################################################
 
--include $(TOPDIR)/Make.defs
-
-CSRCS = $(wildcard *.c)
-
-include $(APPDIR)/Application.mk
+ifeq ($(CONFIG_LIB_ZLIB),y)
+CONFIGURED_APPS += $(APPDIR)/external/zlib
+CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
+CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
+endif
