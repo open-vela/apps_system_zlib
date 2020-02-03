@@ -33,6 +33,8 @@
 
 ifeq ($(CONFIG_LIB_ZLIB),y)
 CONFIGURED_APPS += $(APPDIR)/external/zlib
+CFLAGS += ${shell $(DEFINE) "$(CC)" HAVE_ZLIB}
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
+CXXFLAGS += ${shell $(DEFINE) "$(CC)" HAVE_ZLIB}
 CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
 endif
