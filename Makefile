@@ -36,4 +36,10 @@
 
 CSRCS = $(wildcard *.c)
 
+CFLAGS += ${shell $(DEFINE) "$(CC)" HAVE_ZLIB}
+CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
+
+CXXFLAGS += ${shell $(DEFINE) "$(CC)" HAVE_ZLIB}
+CXXFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
+
 include $(APPDIR)/Application.mk
