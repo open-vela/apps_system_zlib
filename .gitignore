@@ -24,6 +24,6 @@
 /configure.log
 
 .DS_Store
+.built
 .depend
-
 Make.dep
