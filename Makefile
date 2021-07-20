@@ -21,4 +21,13 @@ CSRCS = $(wildcard *.c)
 CFLAGS += -Dcrc32=zlib_crc32
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
 
+MODULE = $(CONFIG_LIB_ZLIB)
+
+ifneq ($(CONFIG_UTILS_GZIP),)
+PROGNAME += $(CONFIG_UTILS_GZIP_PROGNAME)
+PRIORITY += $(CONFIG_UTILS_GZIP_PRIORITY)
+STACKSIZE += $(CONFIG_UTILS_GZIP_STACKSIZE)
+MAINSRC += test/minigzip.c
+endif
+
 include $(APPDIR)/Application.mk
