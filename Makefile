@@ -16,7 +16,16 @@
 
 include $(APPDIR)/Make.defs
 
-CSRCS = $(wildcard *.c)
+CSRCS += $(wildcard *.c)
+CSRCS += contrib/minizip/ioapi.c
+CSRCS += contrib/minizip/mztools.c
+CSRCS += contrib/minizip/unzip.c
+CSRCS += contrib/minizip/zip.c
+
+ifneq ($(CONFIG_LIB_BZIP2),)
+CFLAGS += -DHAVE_BZIP2
+CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/bzip2}
+endif
 
 CFLAGS += -Dcrc32=zlib_crc32
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
@@ -28,6 +37,20 @@ PROGNAME += $(CONFIG_UTILS_GZIP_PROGNAME)
 PRIORITY += $(CONFIG_UTILS_GZIP_PRIORITY)
 STACKSIZE += $(CONFIG_UTILS_GZIP_STACKSIZE)
 MAINSRC += test/minigzip.c
+endif
+
+ifneq ($(CONFIG_UTILS_ZIP),)
+PROGNAME += $(CONFIG_UTILS_ZIP_PROGNAME)
+PRIORITY += $(CONFIG_UTILS_ZIP_PRIORITY)
+STACKSIZE += $(CONFIG_UTILS_ZIP_STACKSIZE)
+MAINSRC += contrib/minizip/minizip.c
+endif
+
+ifneq ($(CONFIG_UTILS_UNZIP),)
+PROGNAME += $(CONFIG_UTILS_UNZIP_PROGNAME)
+PRIORITY += $(CONFIG_UTILS_UNZIP_PRIORITY)
+STACKSIZE += $(CONFIG_UTILS_UNZIP_STACKSIZE)
+MAINSRC += contrib/minizip/miniunz.c
 endif
 
 include $(APPDIR)/Application.mk
