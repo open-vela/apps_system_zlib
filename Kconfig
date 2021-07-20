@@ -15,5 +15,29 @@
 #
 
 config LIB_ZLIB
-	bool "zlib data compression library"
+	tristate "zlib data compression library"
 	default n
+
+if LIB_ZLIB
+
+config UTILS_GZIP
+	bool "GZIP tool"
+	default n
+	---help---
+		Enable gzip utility
+
+if UTILS_GZIP
+config UTILS_GZIP_PROGNAME
+	string "Programe Name"
+	default "gzip"
+
+config UTILS_GZIP_PRIORITY
+	int "gzip utility priority"
+	default 100
+
+config UTILS_GZIP_STACKSIZE
+	int "gzip utility statcksize"
+	default 32768
+endif
+
+endif
