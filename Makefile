@@ -19,7 +19,6 @@ include $(APPDIR)/Make.defs
 CSRCS = $(wildcard *.c)
 
 CFLAGS += -Dcrc32=zlib_crc32
-CFLAGS += ${shell $(DEFINE) "$(CC)" HAVE_ZLIB}
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
 
 include $(APPDIR)/Application.mk
