@@ -102,25 +102,25 @@ struct attr_item
 
 enum { TGZ_EXTRACT, TGZ_LIST, TGZ_INVALID };
 
-static char *TGZfname    OF((const char *));
-static void TGZnotfound  OF((const char *));
+char *TGZfname          OF((const char *));
+void TGZnotfound        OF((const char *));
 
-static int getoct        OF((char *, int));
-static char *strtime     OF((time_t *));
-static int setfiletime   OF((char *, time_t));
-static void push_attr    OF((struct attr_item **, char *, int, time_t));
-static void restore_attr OF((struct attr_item **));
+int getoct              OF((char *, int));
+char *strtime           OF((time_t *));
+int setfiletime         OF((char *, time_t));
+void push_attr          OF((struct attr_item **, char *, int, time_t));
+void restore_attr       OF((struct attr_item **));
 
-static int ExprMatch     OF((char *, char *));
+int ExprMatch           OF((char *, char *));
 
-static int makedir       OF((char *));
-static int matchname     OF((int, int, char **, char *));
+int makedir             OF((char *));
+int matchname           OF((int, int, char **, char *));
 
-static void error        OF((const char *));
-static int tar           OF((gzFile, int, int, int, char **));
+void error              OF((const char *));
+int tar                 OF((gzFile, int, int, int, char **));
 
-static void help         OF((int));
-int main                 OF((int, char **));
+void help               OF((int));
+int main                OF((int, char **));
 
 char *prog;
 
@@ -129,7 +129,7 @@ const char *TGZsuffix[] = { "\0", ".tar", ".tar.gz", ".taz", ".tgz", NULL };
 /* return the file name of the TGZ archive */
 /* or NULL if it does not exist */
 
-static char *TGZfname (const char *arcname)
+char *TGZfname (const char *arcname)
 {
   static char buffer[1024];
   int origlen,i;
@@ -149,7 +149,7 @@ static char *TGZfname (const char *arcname)
 
 /* error message for the filename */
 
-static void TGZnotfound (const char *arcname)
+void TGZnotfound (const char *arcname)
 {
   int i;
 
@@ -165,7 +165,7 @@ static void TGZnotfound (const char *arcname)
 /* convert octal digits to int */
 /* on error return -1 */
 
-static int getoct (char *p,int width)
+int getoct (char *p,int width)
 {
   int result = 0;
   char c;
@@ -188,7 +188,7 @@ static int getoct (char *p,int width)
 /* convert time_t to string */
 /* use the "YYYY/MM/DD hh:mm:ss" format */
 
-static char *strtime (time_t *t)
+char *strtime (time_t *t)
 {
   struct tm   *local;
   static char result[32];
@@ -203,7 +203,7 @@ static char *strtime (time_t *t)
 
 /* set file time */
 
-static int setfiletime (char *fname,time_t ftime)
+int setfiletime (char *fname,time_t ftime)
 {
 #ifdef WIN32
   static int isWinNT = -1;
@@ -250,7 +250,7 @@ static int setfiletime (char *fname,time_t ftime)
 
 /* push file attributes */
 
-static void push_attr(struct attr_item **list,char *fname,int mode,time_t time)
+void push_attr(struct attr_item **list,char *fname,int mode,time_t time)
 {
   struct attr_item *item;
 
@@ -267,7 +267,7 @@ static void push_attr(struct attr_item **list,char *fname,int mode,time_t time)
 
 /* restore file attributes */
 
-static void restore_attr(struct attr_item **list)
+void restore_attr(struct attr_item **list)
 {
   struct attr_item *item, *prev;
 
@@ -287,7 +287,7 @@ static void restore_attr(struct attr_item **list)
 
 #define ISSPECIAL(c) (((c) == '*') || ((c) == '/'))
 
-static int ExprMatch (char *string,char *expr)
+int ExprMatch (char *string,char *expr)
 {
   while (1)
     {
@@ -325,7 +325,7 @@ static int ExprMatch (char *string,char *expr)
 /* return 1 if OK */
 /*        0 on error */
 
-static int makedir (char *newdir)
+int makedir (char *newdir)
 {
   char *buffer = strdup(newdir);
   char *p;
@@ -368,7 +368,7 @@ static int makedir (char *newdir)
 }
 
 
-static int matchname (int arg,int argc,char **argv,char *fname)
+int matchname (int arg,int argc,char **argv,char *fname)
 {
   if (arg == argc)      /* no arguments given (untgz tgzarchive) */
     return 1;
@@ -383,7 +383,7 @@ static int matchname (int arg,int argc,char **argv,char *fname)
 
 /* tar file list or extract */
 
-static int tar (gzFile in,int action,int arg,int argc,char **argv)
+int tar (gzFile in,int action,int arg,int argc,char **argv)
 {
   union  tar_buffer buffer;
   int    len;
@@ -578,7 +578,7 @@ static int tar (gzFile in,int action,int arg,int argc,char **argv)
 
 /* ============================================================ */
 
-static void help(int exitval)
+void help(int exitval)
 {
   printf("untgz version 0.2.1\n"
          "  using zlib version %s\n\n",
@@ -590,7 +590,7 @@ static void help(int exitval)
   exit(exitval);
 }
 
-static void error(const char *msg)
+void error(const char *msg)
 {
   fprintf(stderr, "%s: %s\n", prog, msg);
   exit(1);
