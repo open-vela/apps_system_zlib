@@ -45,7 +45,6 @@
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 
 #ifdef _WIN32
 # include <direct.h>
@@ -98,8 +97,6 @@ static void change_file_date(filename,dosdate,tmu_date)
   SetFileTime(hFile,&ftm,&ftLastAcc,&ftm);
   CloseHandle(hFile);
 #else
-#if defined(unix) || defined(__APPLE__)
-  (void)dosdate;
   struct utimbuf ut;
   struct tm newdate;
   newdate.tm_sec = tmu_date.tm_sec;
@@ -115,7 +112,6 @@ static void change_file_date(filename,dosdate,tmu_date)
 
   ut.actime=ut.modtime=mktime(&newdate);
   utime(filename,&ut);
-#endif
 #endif
 }
 
@@ -138,13 +134,13 @@ static int mymkdir(dirname)
 }
 
 static int makedir (newdir)
-    const char *newdir;
+    char *newdir;
 {
   char *buffer ;
   char *p;
-  size_t len = strlen(newdir);
+  int  len = (int)strlen(newdir);
 
-  if (len == 0)
+  if (len <= 0)
     return 0;
 
   buffer = (char*)malloc(len+1);
@@ -440,7 +436,7 @@ static int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,pa
                     break;
                 }
                 if (err>0)
-                    if (fwrite(buf,(unsigned)err,1,fout)!=1)
+                    if (fwrite(buf,err,1,fout)!=1)
                     {
                         printf("error in writing extracted file\n");
                         err=UNZ_ERRNO;
