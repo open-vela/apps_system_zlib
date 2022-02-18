@@ -27,7 +27,7 @@ CFLAGS += -DHAVE_BZIP2
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/bzip2}
 endif
 
-CFLAGS += -Dcrc32=zlib_crc32 -Wno-shadow -Wno-strict-prototypes -Wno-undef
+CFLAGS += -Dcrc32=zlib_crc32 -Dunix -Wno-shadow -Wno-strict-prototypes -Wno-undef
 CFLAGS += ${shell $(INCDIR) $(INCDIROPT) "$(CC)" $(APPDIR)/external/zlib}
 
 MODULE = $(CONFIG_LIB_ZLIB)
