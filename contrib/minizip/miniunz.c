@@ -45,12 +45,12 @@
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 
 #ifdef _WIN32
 # include <direct.h>
 # include <io.h>
 #else
+# include <sys/stat.h>
 # include <unistd.h>
 # include <utime.h>
 #endif
@@ -98,8 +98,6 @@ static void change_file_date(filename,dosdate,tmu_date)
   SetFileTime(hFile,&ftm,&ftLastAcc,&ftm);
   CloseHandle(hFile);
 #else
-#if defined(unix) || defined(__APPLE__)
-  (void)dosdate;
   struct utimbuf ut;
   struct tm newdate;
   newdate.tm_sec = tmu_date.tm_sec;
@@ -115,7 +113,6 @@ static void change_file_date(filename,dosdate,tmu_date)
 
   ut.actime=ut.modtime=mktime(&newdate);
   utime(filename,&ut);
-#endif
 #endif
 }
 
@@ -138,13 +135,13 @@ static int mymkdir(dirname)
 }
 
 static int makedir (newdir)
-    const char *newdir;
+    char *newdir;
 {
   char *buffer ;
   char *p;
-  size_t len = strlen(newdir);
+  int  len = (int)strlen(newdir);
 
-  if (len == 0)
+  if (len <= 0)
     return 0;
 
   buffer = (char*)malloc(len+1);
@@ -440,7 +437,7 @@ static int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,pa
                     break;
                 }
                 if (err>0)
-                    if (fwrite(buf,(unsigned)err,1,fout)!=1)
+                    if (fwrite(buf,err,1,fout)!=1)
                     {
                         printf("error in writing extracted file\n");
                         err=UNZ_ERRNO;
@@ -485,13 +482,17 @@ static int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
 
     err = unzGetGlobalInfo64(uf,&gi);
     if (err!=UNZ_OK)
+    {
         printf("error %d with zipfile in unzGetGlobalInfo \n",err);
+        return err;
+    }
 
     for (i=0;i<gi.number_entry;i++)
     {
-        if (do_extract_currentfile(uf,&opt_extract_without_path,
+        err = do_extract_currentfile(uf,&opt_extract_without_path,
                                       &opt_overwrite,
-                                      password) != UNZ_OK)
+                                      password);
+        if (err != UNZ_OK)
             break;
 
         if ((i+1)<gi.number_entry)
@@ -505,7 +506,7 @@ static int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
         }
     }
 
-    return 0;
+    return err;
 }
 
 static int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,password)
@@ -521,12 +522,9 @@ static int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite
         return 2;
     }
 
-    if (do_extract_currentfile(uf,&opt_extract_without_path,
+    return do_extract_currentfile(uf,&opt_extract_without_path,
                                       &opt_overwrite,
-                                      password) == UNZ_OK)
-        return 0;
-    else
-        return 1;
+                                      password);
 }
 
 
@@ -548,9 +546,9 @@ int main(argc,argv)
     const char *dirname=NULL;
     unzFile uf=NULL;
 
-    do_banner();
     if (argc==1)
     {
+        do_banner();
         do_help();
         return 0;
     }
