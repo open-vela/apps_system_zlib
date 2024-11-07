@@ -256,7 +256,7 @@ static int isLargeFile(const char* filename)
 
 static int do_zip(const char *path)
 {
-    FILE * fin;
+    FILE * fin = NULL;
     size_t size_read;
     size_t size_buf;
     void *buf;
